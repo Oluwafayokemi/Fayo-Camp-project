@@ -1,0 +1,11 @@
+.img-thumbnail img {
+     width: 100%;
+}
+
+#thnopad{
+ padding: 0;
+}
+
+.img-thumbnail .img-caption{
+ padding: 9px;
+}
