@@ -1,23 +1,41 @@
-var express    = require("express"),
-    app        = express(),
-    bodyParser = require("body-parser"),
-    mongoose   = require("mongoose"),
-    Campground = require("./models/campground"),
-    Comment    = require("./models/comment"),
-    seedDB     = require("./seeds");
-
+var express               = require("express"),
+    seedDB                = require("./seeds"),
+    mongoose              = require("mongoose"),
+    passport              = require("passport"),
+    bodyParser            = require("body-parser"),
+    User                  = require("./models/user"),
+    LocalStrategy         = require("passport-local"),
+    expressSession        = require("express-session"),
+    Comment               = require("./models/comment"),
+    Campground            = require("./models/campground"),
+    passportLocalMongoose = require("passport-local-mongoose");
+    
+var app = express();
 mongoose.connect("mongodb://localhost/yelp_camp_v5");
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended:true}));
 seedDB();
 
+// passport configuration
+app.use(require ("express-session")({
+ secret: "Timo has a dog named rusty",
+ resave: false,
+ saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.get("/", function(req, res){
  res.render("landing");
 });
 //add new camp
 //INDEX: /camprounds Display a list of all campgrounds:
-app.get("/campgrounds", function(req, res){
+app.get("/campgrounds", isLoggedIn, function(req, res){
   Campground.find({}, function(err, allCampgrounds){
    if(err){
     console.log("Something went wrong!");
@@ -35,7 +53,7 @@ app.post("/campgrounds", function(req, res){
  var image = req.body.image;
  var description = req.body.description;
 
- var newCampground = {name: name, image: image, description: description};
+ var newCampground = {name: name, image: image, description: description}
  //create a new campground and save to db
 Campground.create(newCampground, function(err, newlyCreated){
    if(err){
@@ -100,6 +118,48 @@ app.post("/campgrounds/:id/comments", function(req, res){
      }
  });
 });
+
+// =================
+// Auth Routes
+// ==================
+
+app.get("/register", function(req, res) {
+    res.render("register");
+});
+app.post("/register", function(req, res){
+   req.body.username;
+   req.body.password;
+   User.register(new User({username: req.body.username}), req.body.password, function(err, user){
+    if(err){
+     console.log(err);
+     res.render("register");
+    } else {
+     res.redirect("/campgrounds");
+    }
+   });
+});
+
+app.get("/login", function(req, res) {
+    res.render("login");
+});
+app.post("/login", passport.authenticate("local", {
+ successRedirect: "/secret",
+ failureRedirect: "/login"
+ }), function(req, res){
+});
+
+app.get("/logout", function(req, res) {
+    req.logout();
+    res.redirect("/login");
+});
+
+function isLoggedIn(req, res, next){
+ if(req.isAuthenticated()){
+  return next();
+ } 
+ res.redirect("/login");
+ }
+
 app.listen(process.env.PORT, process.env.IP, function(){
  console.log("Yelp server has started!!!");
-})
+});
