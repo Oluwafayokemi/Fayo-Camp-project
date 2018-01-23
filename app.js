@@ -30,12 +30,17 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use(function(req, res, next){
+ res.locals.currentUser = req.user;
+ next();
+});
+
 app.get("/", function(req, res){
  res.render("landing");
 });
 //add new camp
 //INDEX: /camprounds Display a list of all campgrounds:
-app.get("/campgrounds", isLoggedIn, function(req, res){
+app.get("/campgrounds", function(req, res){
   Campground.find({}, function(err, allCampgrounds){
    if(err){
     console.log("Something went wrong!");
@@ -85,7 +90,7 @@ app.get("/campgrounds/:id", function(req, res){
 //===========================
 // Comments Route
 //===========================
-app.get("/campgrounds/:id/comments/new", function(req, res) {
+app.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res) {
  Campground.findById(req.params.id, function(err, campground){
   if(err){
    console.log(err);
@@ -95,7 +100,7 @@ app.get("/campgrounds/:id/comments/new", function(req, res) {
  });
 });
 
-app.post("/campgrounds/:id/comments", function(req, res){
+app.post("/campgrounds/:id/comments", isLoggedIn, function(req, res){
  // lookup campground using id
  Campground.findById(req.params.id, function(err, campground) {
      if(err){
@@ -127,30 +132,31 @@ app.get("/register", function(req, res) {
     res.render("register");
 });
 app.post("/register", function(req, res){
-   req.body.username;
-   req.body.password;
-   User.register(new User({username: req.body.username}), req.body.password, function(err, user){
+   var newUser = new User({username: req.body.username});
+   User.register( newUser, req.body.password, function(err, user){
     if(err){
      console.log(err);
-     res.render("register");
-    } else {
-     res.redirect("/campgrounds");
+     return res.render("register");
     }
+     passport.authenticate("local")(req, res, function(){
+          res.redirect("/campgrounds");
+     });
    });
 });
 
 app.get("/login", function(req, res) {
     res.render("login");
 });
-app.post("/login", passport.authenticate("local", {
- successRedirect: "/secret",
- failureRedirect: "/login"
- }), function(req, res){
+app.post("/login", passport.authenticate("local", 
+    {
+        successRedirect: "/campgrounds",
+        failureRedirect: "/login"
+    }), function(req, res){
 });
 
 app.get("/logout", function(req, res) {
     req.logout();
-    res.redirect("/login");
+    res.redirect("/campgrounds");
 });
 
 function isLoggedIn(req, res, next){
