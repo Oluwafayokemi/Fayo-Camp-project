@@ -26,10 +26,15 @@ router.post("/", isLoggedIn, function(req, res){
        if(err){
         console.log(err);
        } else {
-        console.log("redirect successful");
+        // add username and id to comment
+        comment.author.id = req.user._id;
+        comment.author.username = req.user.username;
+        // save comment
+         comment.save();
          // connect new campgound to comment
          campground.comments.push(comment._id);
          campground.save();
+         console.log(comment);
           // redirect campground show page
           res.redirect("/campgrounds/" + campground._id);
        }
@@ -37,7 +42,7 @@ router.post("/", isLoggedIn, function(req, res){
      }
  });
 });
-
+// middle ware
 function isLoggedIn(req, res, next){
  if(req.isAuthenticated()){
   return next();

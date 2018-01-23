@@ -2,17 +2,15 @@ var express = require("express");
 var router = express.Router();
 var passport = require("passport");
 var User = require("../models/user");
+// root route
 router.get("/", function(req, res){
  res.render("landing");
 });
-
-// =================
-// Auth Routes
-// ==================
-
+// sign up register route
 router.get("/register", function(req, res) {
     res.render("register");
 });
+// create sign up form
 router.post("/register", function(req, res){
    var newUser = new User({username: req.body.username});
    User.register( newUser, req.body.password, function(err, user){
@@ -26,20 +24,26 @@ router.post("/register", function(req, res){
    });
 });
 
+// show login form
 router.get("/login", function(req, res) {
     res.render("login");
 });
+
+// handling login logic
 router.post("/login", passport.authenticate("local", 
     {
         successRedirect: "/campgrounds",
         failureRedirect: "/login"
     }), function(req, res){
 });
+
+// logout route
 router.get("/logout", function(req, res) {
     req.logout();
     res.redirect("/campgrounds");
 });
 
+// middle ware
 function isLoggedIn(req, res, next){
  if(req.isAuthenticated()){
   return next();

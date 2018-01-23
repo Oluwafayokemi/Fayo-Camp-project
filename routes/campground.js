@@ -2,6 +2,7 @@ var express =require("express");
 var router = express.Router();
 var Campground = require("../models/campground");
 
+// index route
 router.get("/", function(req, res){
   Campground.find({}, function(err, allCampgrounds){
    if(err){

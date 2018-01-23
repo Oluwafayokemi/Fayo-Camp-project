@@ -23,34 +23,34 @@ var data = [
 // remove all campgrounds
 function seedDB(){
   Campground.remove({}, function(err){
-    if(err){
-     console.log(err);
-    } else{
-     console.log("removed campgrounds");
-   // add a few campgrounds
-     data.forEach(function(seed){
-       Campground.create(seed, function(err, campground){
-        if (err){
-         console.log(err);
-        } else {
-         console.log("added a campground");
-         Comment.create(
-               {
-                  text: "Beautiful camp, but no internet!",
-                  author: "Kemi"
-               }, function(err, comment){
-                    if(err){
-                     console.log("comment not added", err);
-                   } else {
-                     campground.comments.push(comment._id);
-                     campground.save();
-                     console.log("created new comment");
-                   }
-          });
-        }
-       });
-     });
-    }
+   //  if(err){
+   //   console.log(err);
+   //  } else{
+   //   console.log("removed campgrounds");
+   // // add a few campgrounds
+   //   data.forEach(function(seed){
+   //     Campground.create(seed, function(err, campground){
+   //      if (err){
+   //       console.log(err);
+   //      } else {
+   //       console.log("added a campground");
+   //       Comment.create(
+   //             {
+   //                text: "Beautiful camp, but no internet!",
+   //                author: "Kemi"
+   //             }, function(err, comment){
+   //                  if(err){
+   //                   console.log("comment not added", err);
+   //                 } else {
+   //                   campground.comments.push(comment._id);
+   //                   campground.save();
+   //                   console.log("created new comment");
+   //                 }
+   //        });
+   //      }
+   //     });
+     // });
+    // }
  });
  
 // add a few comments
