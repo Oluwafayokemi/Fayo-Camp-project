@@ -5,6 +5,7 @@ var express               = require("express"),
     bodyParser            = require("body-parser"),
     User                  = require("./models/user"),
     LocalStrategy         = require("passport-local"),
+    methodOverride        = require("method-override"),
     expressSession        = require("express-session"),
     Comment               = require("./models/comment"),
     Campground            = require("./models/campground"),
@@ -13,13 +14,14 @@ var express               = require("express"),
 // requiring routes
 var commentRoutes    = require("./routes/comment"),
     campgroundRoutes = require("./routes/campground"),
-    indexRoutes      = require("./routes/index")
+    indexRoutes      = require("./routes/index");
     
 var app = express();
 mongoose.connect("mongodb://localhost/yelp_camp_v5");
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(methodOverride("_method"));
 // seedDB(); seed the database
 
 // passport configuration

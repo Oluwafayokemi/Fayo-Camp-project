@@ -9,3 +9,7 @@
 .img-thumbnail .img-caption{
  padding: 9px;
 }
+
+#delete {
+ display: inline;
+}
