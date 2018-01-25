@@ -38,15 +38,17 @@ Campground.create(newCampground, function(err, newlyCreated){
 });
 
 //NEW:/dogs/new Displays form to create new campground
-router.get("/new", middleware.isLoggedIn,function(req, res){
+router.get("/new", middleware.isLoggedIn, function(req, res){
  res.render("campgrounds/new");
 });
 
 //SHOW: /dogs/:id GeT shows info about one dog
 router.get("/:id", function(req, res){
  Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
-  if(err){
+  if(err || !foundCampground){
    console.log("something went wrong", err);
+   req.flash("error", "campground does not exist!");
+   res.redirect("back");
     } else {
      console.log(foundCampground);
       res.render("campgrounds/show", {campground: foundCampground});
