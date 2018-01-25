@@ -1,6 +1,5 @@
 <% include ../partials/header %>
 
-<div class="container">
    <!--<div class="row">-->
      <h1 style="text-align: center;">Create a New Campground</h1>
      <div style="width: 30%; margin: 25px auto;">
@@ -12,6 +11,9 @@
                  <input class="form-control" type="text" name="image" placeholder="image url">
               </div>
               <div class="form-group row">
+                 <input class="form-control" type="number" name="price" placeholder="price" min="0.01" step="0.01">
+              </div>
+              <div class="form-group row">
                  <input class="form-control" type="text" name="description" placeholder="description">
               </div>
               <div class="form-group row">
@@ -20,6 +22,5 @@
         </form>
              <a href="/campgrounds">Back To Campgrounds</a>
      </div>
-</div>
 
 <% include ../partials/footer %>

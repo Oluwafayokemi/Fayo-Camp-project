@@ -18,10 +18,11 @@ var commentRoutes    = require("./routes/comment"),
     indexRoutes      = require("./routes/index");
     
 var app = express();
-mongoose.connect("mongodb://localhost/yelp_camp_v5");
+mongoose.connect("mongodb://localhost/yelp_camp_v12");
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended:true}));
+// seedDB();
 app.use(methodOverride("_method"));
 app.use(flash());
 
