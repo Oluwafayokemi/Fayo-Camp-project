@@ -1,15 +1,37 @@
-<% include ./partials/header %>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>YelpCamp</title>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../stylesheets/landing.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript" async></script>
+    </head>
+    <body>
+    
+    <div class="container">
+        <% if(error && error.length > 0){ %>
+            <div class="alert alert-danger" role="alert">
+                <%= error %>
+            </div>
+        <% } %>
+        <% if(success && success.length > 0){ %>
+            <div class="alert alert-success" role="alert">
+                <%= success %>
+            </div>
+        <% } %>
+    </div>
+    
+    <div id="landing-header">
+        <h1>Welcome to YelpCamp!</h1>
+   	    <a class="btn btn-lg btn-success"  href="/campgrounds" role="button" >View All Campgrounds</a>
+    </div>
 
-
-
-<h1>This is my landing page!!!</h1>
-
-<p>Welcome to Landing Page!!1</p>
-
-<li><a href="/campgrounds"> View All Camp Sites </a></li>
-<li><a href="/register"> Sign up </a></li>
-<li><a href="/login"> Login </a></li>
-<li><a href="/logout"> Logout </a></li>
-
+    <ul class="slideshow">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
 
 <% include ./partials/footer %>
