@@ -26,12 +26,14 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
 app.use(flash());
 
+
 // passport configuration
 app.use(require ("express-session")({
  secret: "Timo has a dog named rusty",
  resave: false,
  saveUninitialized: false
 }));
+app.locals.moment     = require('moment');
 app.use(passport.initialize());
 app.use(passport.session());
 
