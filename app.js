@@ -12,14 +12,15 @@ var express               = require("express"),
     Campground            = require("./models/campground"),
     passportLocalMongoose = require("passport-local-mongoose");
     
+    var app = express();
 // requiring routes
 var commentRoutes    = require("./routes/comment"),
     campgroundRoutes = require("./routes/campground"),
     indexRoutes      = require("./routes/index");
-    
-var app = express();
-// mongoose.connect("mongodb://localhost/yelp_camp_v13");
-mongoose.connect("mongodb://fayokemi:Excellence@ds217138.mlab.com:17138/yelpcamp");
+
+var url = process.env.DATABASEURL || "mongodb://localhost/yelp_camp_v13"
+mongoose.connect(url);
+// mongoose.connect("mongodb://fayokemi:Excellence@ds217138.mlab.com:17138/yelpcamp");
 
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));

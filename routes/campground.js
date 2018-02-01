@@ -26,28 +26,27 @@ router.post("/", middleware.isLoggedIn, function(req, res){
     id: req.user._id,
     username: req.user.username 
  };
- geocoder.geocode(req.body.location, function (err, data) {
-    if(err){
-        console.log(err);
-        req.flash("error", "something went wrong at geomap" + err.geocoder);
-        return res.redirect("back");
-    }  
+ geocoder.geocode(req.body.location, function (err, data) {  
+  if(err){
+   req.flash("error", "location not found ", err.geocoder);
+   return res.redirect("back");
+  } 
     var lat = data.results[0].geometry.location.lat;
     var lng = data.results[0].geometry.location.lng;
     var location = data.results[0].formatted_address;
-    var newCampground = {name: name, image: image, price: price, description: description, author: author, location: location, lat: lat, lng: lng};
- //create a new campground and save to db
+    var newCampground = {name: name, image: image, price: price, description: description, author:author, location: location, lat: lat, lng: lng};
+    // Create a new campground and save to DB
     Campground.create(newCampground, function(err, newlyCreated){
-       if(err){
-        console.log("Something went wrong!");
-       } else {
-        console.log(newlyCreated);
-        res.redirect("/campgrounds");
-       }
-     });
+        if(err){
+            console.log(err);
+        } else {
+            //redirect back to campgrounds page
+            console.log(newlyCreated);
+            res.redirect("/campgrounds");
+        }
+    });
   });
 });
-
 //NEW:/dogs/new Displays form to create new campground
 router.get("/new", middleware.isLoggedIn, function(req, res){
  res.render("campgrounds/new");
@@ -80,26 +79,25 @@ router.get("/:id/edit",  middleware.checkCampgroundOwnership, function(req, res)
 });
 // update router
 router.put("/:id",  middleware.checkCampgroundOwnership, function(req, res){
- geocoder.geocode(req.body.location, function (err, data) {
-    if(err){
-        console.log(err);
-        req.flash("error", "something went wrong at the mapConsole " + err.geocoder);
-        return res.redirect("back");
-    }  
+ geocoder.geocode(req.body.campground.location, function (err, data) {
+  if(err){
+   req.flash("error" + "location not found " + err.geocoder);
+   return res.redirect("back");
+  } 
     var lat = data.results[0].geometry.location.lat;
     var lng = data.results[0].geometry.location.lng;
     var location = data.results[0].formatted_address;
-    var newData = {name: req.body.name, image: req.body.image, description: req.body.description, price: req.body.price, location: location, lat: lat, lng: lng};
- // find and update the correct campground
- // redirect somewhere(show page)
-    Campground.findByIdAndUpdate(req.params.id, {$set: newData}, req.body.campground, function(err, campground){
-     if(err){
-      res.redirect("/campgrounds");
-     } else {
-      res.redirect("/campgrounds/" + req.params.id);
-     }
+    var newData = {name: req.body.campground.name, image: req.body.campground.image, price: req.body.campground.price, description: req.body.campground.description,  location: location, lat: lat, lng: lng};
+    Campground.findByIdAndUpdate(req.params.id, {$set: newData}, function(err, campground){
+        if(err){
+            req.flash("error", err.message);
+            res.redirect("back");
+        } else {
+            req.flash("success","Successfully Updated!");
+            res.redirect("/campgrounds/" + campground._id);
+        }
     });
- });
+  });
 });
 // Destroy
 router.delete("/:id",  middleware.checkCampgroundOwnership,  function(req, res) {
